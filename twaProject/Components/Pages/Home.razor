@@ -1,7 +1,25 @@
 ﻿@page "/"
+@using System.Diagnostics
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Login</PageTitle>
 
-<h1>Hello, world!</h1>
+<div data-bs-theme="dark">
+    @* <input type="text" /> *@
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1"></span>
+        <input @bind="name" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
 
-Welcome to your new app.
+    <button @onclick="click" class="btn btn-dark btn-lg">Login</button>
+    <p>@name</p>
+</div>
+
+@code {
+    private string name = "ss";
+
+    private void click()
+    {
+        Debug.Print(name);
+    }
+}
