@@ -1,0 +1,16 @@
+﻿@page "/userDetails"
+@using System.Diagnostics
+@using twaProject.Classes
+@rendermode InteractiveServer
+@inject StateManager stateManager
+@inject NavigationManager navigationManager
+
+<PageTitle>Overview</PageTitle>
+
+<button>Create project</button>
+
+@if (stateManager.isUserLogged)
+{
+    <p>Succes!</p>
+}
+

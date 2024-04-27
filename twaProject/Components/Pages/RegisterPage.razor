@@ -1,0 +1,36 @@
+﻿@page "/registerPage"
+@using System.Diagnostics
+@using twaProject.Classes
+@rendermode InteractiveServer
+@inject StateManager stateManager
+@inject NavigationManager navigationManager
+
+<PageTitle>Register</PageTitle>
+<div class="align-items-center">
+    <EditForm Model="@_webUser" FormName="loginForm" OnValidSubmit="Register">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <label for="name">Username: </label>
+        <InputText id="name" type="text" @bind-Value="@_webUser.Name"></InputText>
+        <br/>
+        <label for="password">Password: </label>
+        <InputText id="password" type="password" @bind-Value="@_webUser.Password"></InputText>
+        <br/>
+        <label for="passwordAgain">Password again: </label>
+        <InputText id="passwordAgain" type="password" @bind-Value="@psswAgain"></InputText>
+        <button type="submit">Submit</button>
+    </EditForm>
+    
+    @if (!passwordsAlign)
+    {
+        <p>Passwords are not aligning</p>
+    }
+    @if (succes)
+    {
+        <p>Succes!</p>
+    }
+    @if (exists)
+    {
+        <p>User with this username already exists!</p>
+    }
+</div>

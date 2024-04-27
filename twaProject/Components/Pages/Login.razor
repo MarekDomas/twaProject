@@ -1,0 +1,28 @@
+﻿@page "/"
+@using System.Diagnostics
+@using twaProject.Classes
+@rendermode InteractiveServer
+@inject StateManager stateManager
+@inject NavigationManager navigationManager
+
+<PageTitle>Login</PageTitle>
+
+<div class="align-items-center">
+    <EditForm Model="@WebUser" FormName="loginForm" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <label for="name">Username: </label>
+        <InputText id="name" type="text" @bind-Value="@WebUser.Name"></InputText>
+        <br/>
+        <label for="password">Password: </label>
+        <InputText id="password" type="password" @bind-Value="@WebUser.Password"></InputText>
+        <br/>
+        <button type="submit">Submit</button>
+    </EditForm>
+    <br/>
+    <button @onclick="navToRegister">Do not have account? Register</button>
+    @if (!succes)
+    {
+        <p>Wrong name or password</p>
+    }
+</div>

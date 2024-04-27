@@ -1,9 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@using twaProject.Classes
+@inherits LayoutComponentBase
+@inject StateManager stateManager
 
-<div class="page" >
-    @* <div class="sidebar"> *@
-    @*     <NavMenu/> *@
-    @* </div> *@
+<div class="page">
+    @if (stateManager.isUserLogged)
+    {
+        <div class="sidebar">
+            <NavMenu/>
+        </div>
+    }
 
     <main >
         <div class="top-row px-4">

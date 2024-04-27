@@ -1,3 +1,4 @@
+using twaProject.Classes;
 using twaProject.Components;
 
 namespace twaProject;
@@ -11,6 +12,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+        builder.Services.AddScoped<StateManager>();
 
         var app = builder.Build();
 
