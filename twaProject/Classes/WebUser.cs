@@ -11,4 +11,9 @@ public class WebUser
 
     [Required]
     public string Password { get; set; }
+    
+    //Foreign key
+    public List<Projekt> Projekts { get; set; } = new();
+    public IList<Task> Tasks { get; set; }= new List<Task>();
+    
 }

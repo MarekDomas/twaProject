@@ -22,7 +22,7 @@ public partial class Login
         using (var context = new MainDbContext())
         {
             context.Database.EnsureCreated();
-            succes = context.WebUsers.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
+            succes = context.WebUser.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
             if (succes)
             {
                 stateManager.isUserLogged = true;

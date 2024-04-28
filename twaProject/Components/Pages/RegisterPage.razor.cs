@@ -29,11 +29,11 @@ public partial class RegisterPage
         {
             var tempUser = (WebUser)editContext.Model;
             context.Database.EnsureCreated();
-            exists = context.WebUsers.Any(u => u.Name == tempUser.Name);
+            exists = context.WebUser.Any(u => u.Name == tempUser.Name);
             if (!exists)
             {
                 context.Database.EnsureCreated();
-                context.WebUsers.Add(tempUser);
+                context.WebUser.Add(tempUser);
                 context.SaveChanges();
                 succes = true;
             }
