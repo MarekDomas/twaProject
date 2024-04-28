@@ -1,16 +1,46 @@
-﻿@page "/userDetails"
+﻿@page "/userDetails/{succes:bool?}"
 @using System.Diagnostics
+@using Microsoft.EntityFrameworkCore
 @using twaProject.Classes
+@using twaProject.Components.Templates
 @rendermode InteractiveServer
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
+@inject MainDbContext context
 
 <PageTitle>Overview</PageTitle>
 
-<button>Create project</button>
+<button class="btn btn-primary" @onclick="createProject">Create project</button>
 
 @if (stateManager.isUserLogged)
 {
-    <p>Succes!</p>
-}
+    <p>You are logged in!</p>
+    
+    WebUser? projects = context.WebUser
+        .Include(u => u.Projekts) // Include the Projekts navigation property
+        .FirstOrDefault(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
+    if (projects.Projekts.Count > 0)
+    {
+        @foreach (var projekt in projects.Projekts)
+        {
+            <p>@projekt.Name</p>
+            @foreach (var clen in projekt.MemberUsers)
+            {
+                <p>@clen.Name</p>
+            }
+            @* <br/> *@
+            @* <p>@projekt.Description</p> *@
+        }
+    }
+    else
+    {
+        <p>You have no current projekts</p>
+    }
 
+}
+@if (Succes)
+{
+    @* <Alert Title="Succes" Message="Project successfully created!"></Alert> *@
+    <p>Project successfully created!</p>
+    Succes = false;
+}

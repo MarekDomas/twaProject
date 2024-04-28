@@ -1,0 +1,12 @@
+﻿@using twaProject.Classes
+@inject MainDbContext context
+
+<br/>
+<label >Select members of this project: </label>
+<InputSelect  @bind-Value="Users" >
+    @* @foreach (var user in this.context.WebUser) *@
+    @* { *@
+    @*     <option>@user.Name</option> *@
+    @* } *@
+</InputSelect>
+<br/>

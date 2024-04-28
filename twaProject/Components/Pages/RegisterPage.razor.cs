@@ -25,18 +25,16 @@ public partial class RegisterPage
             return;
         }
         
-        using (var context = new MainDbContext())
+        var tempUser = (WebUser)editContext.Model;
+        context.Database.EnsureCreated();
+        exists = context.WebUser.Any(u => u.Name == tempUser.Name);
+        if (!exists)
         {
-            var tempUser = (WebUser)editContext.Model;
             context.Database.EnsureCreated();
-            exists = context.WebUser.Any(u => u.Name == tempUser.Name);
-            if (!exists)
-            {
-                context.Database.EnsureCreated();
-                context.WebUser.Add(tempUser);
-                context.SaveChanges();
-                succes = true;
-            }
+            context.WebUser.Add(tempUser);
+            context.SaveChanges();
+            succes = true;
         }
+    
     }
 }

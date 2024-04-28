@@ -1,0 +1,52 @@
+﻿@page "/CreateProjPage"
+@using System.Diagnostics
+@using twaProject.Classes
+@using twaProject.Components.Templates
+@rendermode InteractiveServer
+@inject StateManager stateManager
+@inject NavigationManager navigationManager
+@inject MainDbContext context
+
+<h3>CreateProjPage</h3>
+
+<EditForm Model="_projekt" FormName="newProjForm" OnValidSubmit="Submit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    
+    <label for="name">Project name: </label>
+    <InputText id="name" type="text" @bind-Value="_projekt.Name"></InputText>
+    <br/>
+    
+    <label for="startDate">Start date: </label>
+    <InputDate id="startDate" @bind-Value="_projekt.StartDate"></InputDate>
+    <br/>
+
+    <label for="endDate">End date: </label>
+    <InputDate id="endDate"  @bind-Value="_projekt.EndDate"></InputDate>
+    <br/>
+    
+    <label for="">Description: </label>
+    <InputText id="description" type="text" @bind-Value="_projekt.Description"></InputText>
+    <br/>
+    
+    <label>Add member: </label>
+    <button @onclick="addSelect" type="button">Add</button>
+    <br/>
+    @foreach (var selectUser in memberUsers)
+    {
+        <select @onchange="addMember">
+            @foreach (var user in this.context.WebUser)
+            {
+                <option value="@user.Name">@user.Name</option>
+            }
+        </select>
+        <br/>
+    }
+    
+    <br/>
+    <button type="submit">Submit</button>
+</EditForm>
+@if (succes)
+{
+    <p>Succes! </p>
+}

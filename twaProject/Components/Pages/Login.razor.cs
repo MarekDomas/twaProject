@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore;
 using twaProject.Classes;
 
 namespace twaProject.Components.Pages;
@@ -19,17 +20,16 @@ public partial class Login
     {
         var tempUser = (WebUser)editContext.Model;
 
-        using (var context = new MainDbContext())
-        {
             context.Database.EnsureCreated();
             succes = context.WebUser.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
             if (succes)
             {
                 stateManager.isUserLogged = true;
-                navigationManager.NavigateTo("userDetails");
+                stateManager.CurrentUser = context.WebUser.FirstOrDefault( u => u.Name == tempUser.Name);
                 StateHasChanged();
+                navigationManager.NavigateTo("userDetails");
             }
-        }
+        
     }
 
     private void navToRegister()

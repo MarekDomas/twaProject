@@ -4,6 +4,7 @@
 @rendermode InteractiveServer
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
+@inject MainDbContext context
 
 <PageTitle>Register</PageTitle>
 <div class="align-items-center">
@@ -18,7 +19,8 @@
         <br/>
         <label for="passwordAgain">Password again: </label>
         <InputText id="passwordAgain" type="password" @bind-Value="@psswAgain"></InputText>
-        <button type="submit">Submit</button>
+        <br/>
+        <button class="btn btn-primary" type="submit">Submit</button>
     </EditForm>
     
     @if (!passwordsAlign)
