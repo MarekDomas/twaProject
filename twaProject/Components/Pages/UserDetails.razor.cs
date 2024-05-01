@@ -9,6 +9,9 @@ public partial class UserDetails
     private void createProject()
     {
         navigationManager.NavigateTo("createProjPage");
-        StateHasChanged();
+    }
+    private void editProject(int id)
+    {
+        navigationManager.NavigateTo($"createProjPage/{id}");
     }
 }

@@ -7,7 +7,7 @@ public class Projekt
     public int ProjektId { get; set; }
     //Foreign keys
     public List<WebUser>? MemberUsers { get; set; }= [];
-    public IList<Task>? Tasks { get; set; } = new List<Task>();
+    public List<Task>? Tasks { get; set; } = new();
     
     [Required]
     public string Name { get; set; }

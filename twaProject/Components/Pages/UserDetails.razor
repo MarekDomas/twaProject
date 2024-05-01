@@ -1,4 +1,4 @@
-﻿@page "/userDetails/{succes:bool?}"
+﻿@page "/userDetails/{Succes:bool?}"
 @using System.Diagnostics
 @using Microsoft.EntityFrameworkCore
 @using twaProject.Classes
@@ -16,27 +16,30 @@
 {
     <p>You are logged in!</p>
     
-    WebUser? projects = context.WebUser
-        .Include(u => u.Projekts) // Include the Projekts navigation property
-        .FirstOrDefault(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
-    if (projects.Projekts.Count > 0)
+    int currentUserId = stateManager.CurrentUser.WebUserId;
+
+    List<Projekt> projects = context.Projekt
+        .Include(p => p.MemberUsers) 
+        .Where(p => p.MemberUsers.Any(mu => mu.WebUserId == currentUserId))
+        .ToList();
+
+    if (projects.Count > 0)
     {
-        @foreach (var projekt in projects.Projekts)
+        <p>Members of project: </p>
+        foreach (var project in projects)
         {
-            <p>@projekt.Name</p>
-            @foreach (var clen in projekt.MemberUsers)
+            <p><b>@project.Name</b></p>
+            foreach (var member in project.MemberUsers)
             {
-                <p>@clen.Name</p>
+                <p>@member.Name</p>
             }
-            @* <br/> *@
-            @* <p>@projekt.Description</p> *@
+            <button @onclick="e => editProject(project.ProjektId)">Edit project</button>
         }
     }
     else
     {
-        <p>You have no current projekts</p>
+        <p>You have no current projects</p>
     }
-
 }
 @if (Succes)
 {

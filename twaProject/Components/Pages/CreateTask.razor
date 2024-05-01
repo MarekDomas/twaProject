@@ -1,0 +1,38 @@
+﻿@page "/createTask/{projektId:int}/{taskId:int?}"
+@using twaProject.Classes
+@inject StateManager stateManager
+@inject NavigationManager navigationManager
+@inject MainDbContext context
+
+<h3>CreateTask</h3>
+
+<EditForm Model="_task" class="justify-content-center align-self-center" FormName="newProjForm" OnValidSubmit="Submit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <label for="name">Project name: </label>
+    <InputText id="name" type="text" name="inp" @bind-Value="_task.Name"></InputText>
+    <br/>
+
+    <label for="startDate">Start date: </label>
+    <InputDate id="startDate" @bind-Value="_task.StartDate"></InputDate>
+    <br/>
+
+    <label for="endDate">End date: </label>
+    <InputDate id="endDate"  @bind-Value="_task.EndDate"></InputDate>
+    <br/>
+
+    <label for="">Description: </label>
+    <InputText id="description" type="text" @bind-Value="_task.Description"></InputText>
+    <br/>
+
+    <select @onchange="addMember">
+        @foreach (var user in this.context.WebUser)
+        {
+            <option value="@user.Name">@user.Name</option>
+        }
+    </select>
+
+    <br/>
+    <button type="submit">Submit</button>
+</EditForm>

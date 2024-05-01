@@ -1,52 +1,112 @@
-﻿@page "/CreateProjPage"
-@using System.Diagnostics
+﻿@page "/createProjPage/{id:int?}"
 @using twaProject.Classes
-@using twaProject.Components.Templates
-@rendermode InteractiveServer
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
 @inject MainDbContext context
 
 <h3>CreateProjPage</h3>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            
+            <EditForm Model="_projekt" class="justify-content-center align-self-center" FormName="newProjForm" OnValidSubmit="Submit">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
 
-<EditForm Model="_projekt" FormName="newProjForm" OnValidSubmit="Submit">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
-    
-    <label for="name">Project name: </label>
-    <InputText id="name" type="text" @bind-Value="_projekt.Name"></InputText>
-    <br/>
-    
-    <label for="startDate">Start date: </label>
-    <InputDate id="startDate" @bind-Value="_projekt.StartDate"></InputDate>
-    <br/>
+                <label for="name">Project name: </label>
+                <InputText id="name" type="text" name="inp" @bind-Value="_projekt.Name"></InputText>
+                <br/>
 
-    <label for="endDate">End date: </label>
-    <InputDate id="endDate"  @bind-Value="_projekt.EndDate"></InputDate>
-    <br/>
-    
-    <label for="">Description: </label>
-    <InputText id="description" type="text" @bind-Value="_projekt.Description"></InputText>
-    <br/>
-    
-    <label>Add member: </label>
-    <button @onclick="addSelect" type="button">Add</button>
-    <br/>
-    @foreach (var selectUser in memberUsers)
-    {
-        <select @onchange="addMember">
-            @foreach (var user in this.context.WebUser)
+                <label for="startDate">Start date: </label>
+                <InputDate id="startDate" @bind-Value="_projekt.StartDate"></InputDate>
+                <br/>
+
+                <label for="endDate">End date: </label>
+                <InputDate id="endDate"  @bind-Value="_projekt.EndDate"></InputDate>
+                <br/>
+
+                <label for="">Description: </label>
+                <InputText id="description" type="text" @bind-Value="_projekt.Description"></InputText>
+                <br/>
+
+                <label>Add member: </label>
+                <button @onclick="addSelect" type="button">Add</button>
+                <br/>
+
+                <select @onchange="addMember" disabled>
+                    <option value="@stateManager.CurrentUser.Name">@stateManager.CurrentUser.Name</option>
+                </select>
+
+                @if (!edit || newUsersCount > 0)
+                {
+                    <br />
+                    @* Adding selects for selecting users *@
+                    @foreach (var selectUser in memberUsers)
+                    {
+                        <select @onchange="e =>  addMember(e)">
+                            @for(int i = -1; i < this.context.WebUser.Count(); i++)  @*(var user in this.context.WebUser)*@
+                            {
+                                if(i == -1) 
+                                {
+                                    <option value="">"Choose member"</option>
+                                    //_projekt.MemberUsers.Add(user);
+                                    continue;
+                                }
+                                var user = this.context.WebUser.ToList()[i];
+                                if(user.Name == stateManager.CurrentUser.Name)
+                                {
+                                    continue;
+                                }
+                                <option value="@user.Name">@user.Name</option>
+                            }
+                        </select>
+                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(index)"/>
+                        <br/>
+                    }
+                }
+                @if(edit)
+                {
+                    @foreach (var user in _projekt.MemberUsers)
+                    {
+                        if (user.WebUserId == stateManager.CurrentUser.WebUserId )
+                        {
+                            continue;
+                        }
+                        if (memberUsers.Contains(user))
+                        {
+                            continue;
+                        }
+
+                        <select disabled>
+                            <option>@user.Name</option>
+                        </select>
+                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(existingUsersCount)"/>
+                        existingUsersCount++;
+                        <br/>
+                    }
+                }
+                
+                
+                <br/>
+                <button type="submit">Submit</button>
+            </EditForm>
+        </div>
+        <div class="col">
+            @foreach (var task in this.context.Task)
             {
-                <option value="@user.Name">@user.Name</option>
+                if (task.ProjektId == _projekt.ProjektId)
+                {
+                    <p>@task.Name</p>
+                    <p>@task.WebUser.Name</p>
+                    <button type="button" @onclick="e => editTask(e,task.TaskId)">Edit task</button>
+                }
             }
-        </select>
-        <br/>
-    }
-    
-    <br/>
-    <button type="submit">Submit</button>
-</EditForm>
-@if (succes)
-{
-    <p>Succes! </p>
-}
+            <br/>
+            <button type="button" @onclick="addTask">Add task</button>
+            @if (!projectExists)
+            {
+                <p>Save project before adding tasks. </p>
+            }
+        </div>
+    </div>
+</div>
