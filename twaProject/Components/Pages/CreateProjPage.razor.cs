@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 using twaProject.Classes;
 using twaProject.Components.Templates;
+using Task = System.Threading.Tasks.Task;
 
 namespace twaProject.Components.Pages;
 
 public partial class CreateProjPage : ComponentBase
 {
     [Parameter]
-    public int? id { get; set; } = null;//Id used for routing purposes
+    public int? id { get; set; } = null;//id used for routing purposes
     
     private Projekt _projekt = new();
     private List<WebUser> memberUsers { get; set; }= new();
@@ -21,10 +24,12 @@ public partial class CreateProjPage : ComponentBase
     private int newUsersCount = 0;
     private int existingUsersCount = 0;
     private List<WebUser> usersToAdd = new();
-    private bool projectExists = false;
-    
+    private bool projectExists;
+    List<Classes.Task> tasksInProjekt ;
+
     protected override void OnInitialized()
     {
+        
         if (id is not null)
         {
             _projekt = context.Projekt.FirstOrDefault(p => p.ProjektId == id);
@@ -38,12 +43,30 @@ public partial class CreateProjPage : ComponentBase
             _projekt.EndDate = DateOnly.FromDateTime(DateTime.Now.Date);
             SelectUser.Users = _projekt.MemberUsers;
         }
- 
+        tasksInProjekt = context.Task
+            .Where(task => task.ProjektId == _projekt.ProjektId)
+            .Include(task => task.WebUser) // Include related WebUser
+            .ToList();
         base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result =  await localStorage.GetAsync<WebUser>("currentUser");
+        var userLogged= await localStorage.GetAsync<bool>("isUserLogged");
+        stateManager.CurrentUser = result.Value;
+        stateManager.isUserLogged = userLogged.Value;
     }
 
     private void Submit(EditContext editContext)
     {
+        Projekt tempProj = (Projekt)editContext.Model;
+        if (tempProj.StartDate > tempProj.EndDate)
+        {
+            JsRuntime.InvokeVoidAsync("alert","The end date cannot be less than start date!");
+            return;
+        }
+        
         if (edit)
         {
             _projekt.MemberUsers = _projekt.MemberUsers.Distinct().ToList();
@@ -53,7 +76,6 @@ public partial class CreateProjPage : ComponentBase
         }
         else
         {
-            Projekt tempProj = (Projekt)editContext.Model;
 
             context.Database.EnsureCreated();
 
@@ -119,8 +141,16 @@ public partial class CreateProjPage : ComponentBase
         {
             existingUsersCount = 0;
         }
-        
-        _projekt.MemberUsers.RemoveAt(_projekt.MemberUsers.Count - 1);
+
+        if (edit)
+        {
+            WebUser userToRemove = context.WebUser.FirstOrDefault(u => u.WebUserId == i);
+            _projekt.MemberUsers.Remove(userToRemove);    
+        }
+        else
+        {
+            _projekt.MemberUsers.RemoveAt(_projekt.MemberUsers.Count - 1);
+        }
     }
 
     

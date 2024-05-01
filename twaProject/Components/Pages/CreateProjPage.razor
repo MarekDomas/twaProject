@@ -3,6 +3,9 @@
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
 @inject MainDbContext context
+@inject ProtectedSessionStorage sessionStorage
+@inject ProtectedLocalStorage localStorage
+@inject IJSRuntime JsRuntime
 
 <h3>CreateProjPage</h3>
 <div class="container">
@@ -36,7 +39,8 @@
                 <select @onchange="addMember" disabled>
                     <option value="@stateManager.CurrentUser.Name">@stateManager.CurrentUser.Name</option>
                 </select>
-
+                
+                @* Shows selects of newly given users *@
                 @if (!edit || newUsersCount > 0)
                 {
                     <br />
@@ -44,7 +48,7 @@
                     @foreach (var selectUser in memberUsers)
                     {
                         <select @onchange="e =>  addMember(e)">
-                            @for(int i = -1; i < this.context.WebUser.Count(); i++)  @*(var user in this.context.WebUser)*@
+                            @for(int i = -1; i < this.context.WebUser.Count(); i++) 
                             {
                                 if(i == -1) 
                                 {
@@ -64,7 +68,7 @@
                         <br/>
                     }
                 }
-                @if(edit)
+                @if(edit) @* Shows selects of already assigned users*@
                 {
                     @foreach (var user in _projekt.MemberUsers)
                     {
@@ -80,27 +84,25 @@
                         <select disabled>
                             <option>@user.Name</option>
                         </select>
-                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(existingUsersCount)"/>
+                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(user.WebUserId)"/>
                         existingUsersCount++;
                         <br/>
                     }
                 }
-                
                 
                 <br/>
                 <button type="submit">Submit</button>
             </EditForm>
         </div>
         <div class="col">
-            @foreach (var task in this.context.Task)
+            @foreach (var task in tasksInProjekt)
             {
-                if (task.ProjektId == _projekt.ProjektId)
-                {
-                    <p>@task.Name</p>
-                    <p>@task.WebUser.Name</p>
-                    <button type="button" @onclick="e => editTask(e,task.TaskId)">Edit task</button>
-                }
+                <p>@task.Name</p>
+                <p>@task.WebUser.Name</p>
+                <button type="button" @onclick="e => editTask(e,task.TaskId)">Show details</button>
+                <input type="checkbox" @bind="@task.IsCompleted" disabled/>
             }
+
             <br/>
             <button type="button" @onclick="addTask">Add task</button>
             @if (!projectExists)

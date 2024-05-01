@@ -3,6 +3,8 @@
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
 @inject MainDbContext context
+@inject ProtectedLocalStorage localStorage
+@inject IJSRuntime JsRuntime
 
 <h3>CreateTask</h3>
 
@@ -27,11 +29,15 @@
     <br/>
 
     <select @onchange="addMember">
-        @foreach (var user in this.context.WebUser)
+        
+        @foreach (var user in usersInProjekt)
         {
             <option value="@user.Name">@user.Name</option>
         }
     </select>
+    
+    <article>Is task completed: </article>
+    <InputCheckbox @bind-Value="@_task.IsCompleted" @oninput="() => _task.IsCompleted = !_task.IsCompleted"></InputCheckbox>
 
     <br/>
     <button type="submit">Submit</button>

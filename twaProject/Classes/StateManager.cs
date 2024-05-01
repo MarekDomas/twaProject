@@ -1,4 +1,5 @@
-﻿namespace twaProject.Classes;
+﻿
+namespace twaProject.Classes;
 
 public class StateManager
 {
@@ -8,6 +9,4 @@ public class StateManager
     {
         WebUserId = -50
     };
-    
-    
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using twaProject.Classes;
+using Task = System.Threading.Tasks.Task;
 
 namespace twaProject.Components.Pages;
 
@@ -16,17 +17,18 @@ public partial class Login
         base.OnInitialized();
     }
 
-    private void Submit(EditContext editContext)
+    private async Task Submit(EditContext editContext)
     {
         var tempUser = (WebUser)editContext.Model;
-
+        
             context.Database.EnsureCreated();
             succes = context.WebUser.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
             if (succes)
             {
                 stateManager.isUserLogged = true;
                 stateManager.CurrentUser = context.WebUser.FirstOrDefault( u => u.Name == tempUser.Name);
-                StateHasChanged();
+                await localStorage.SetAsync("isUserLogged", true);
+                await localStorage.SetAsync("currentUser", stateManager.CurrentUser);
                 navigationManager.NavigateTo("userDetails");
             }
         
