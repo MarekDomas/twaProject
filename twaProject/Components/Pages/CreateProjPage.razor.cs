@@ -81,7 +81,7 @@ public partial class CreateProjPage : ComponentBase
 
             tempProj.MemberUsers = _projekt.MemberUsers;
             
-            tempProj.MemberUsers.Add(stateManager.CurrentUser);
+            tempProj.MemberUsers.Add(context.WebUser.FirstOrDefault(u => u.WebUserId == stateManager.CurrentUser.WebUserId));
             tempProj.MemberUsers = tempProj.MemberUsers.Distinct().ToList();
 
             context.Projekt.Add(tempProj);
