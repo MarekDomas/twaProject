@@ -6,28 +6,34 @@
 @inject NavigationManager navigationManager
 @inject MainDbContext context
 @inject ProtectedLocalStorage localStorage
-<PageTitle>Login</PageTitle>
 
-<div >
-    <EditForm Model="@WebUser" class="align-items-center" FormName="loginForm" OnValidSubmit="Submit">
+<PageTitle>Login</PageTitle>
+<div class="d-flex justify-content-center align-items-center">
+    <EditForm Model="@WebUser" FormName="loginForm" OnValidSubmit="Submit" class="w-50">
         <DataAnnotationsValidator></DataAnnotationsValidator>
-        <ValidationSummary></ValidationSummary>
+        <ValidationSummary class="text-danger"></ValidationSummary>
+
         <div class="mb-3">
-            <label for="name">Username: </label>
+            <label for="name" class="form-label">Username:</label>
             <InputText class="form-control" id="name" type="text" @bind-Value="@WebUser.Name"></InputText>
-            <br/>
         </div>
-        
-        <label for="password">Password: </label>
-        <InputText id="password" type="password" @bind-Value="@WebUser.Password"></InputText>
-        <br/>
-        
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <InputText class="form-control" id="password" type="password" @bind-Value="@WebUser.Password"></InputText>
+        </div>
+
         <button class="btn btn-primary" type="submit">Submit</button>
     </EditForm>
-    <br/>
-    <button @onclick="navToRegister" class="btn btn-secondary">Do not have account? Register</button>
-    @if (!succes)
-    {
-        <p>Wrong name or password</p>
-    }
 </div>
+
+<div class="d-flex justify-content-center align-items-center mt-3">
+    <button @onclick="navToRegister" class="btn btn-secondary">Do not have an account? Register</button>
+</div>
+
+@if (!succes)
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        Wrong username or password
+    </div>
+}

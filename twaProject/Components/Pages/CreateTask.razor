@@ -8,37 +8,44 @@
 
 <h3>CreateTask</h3>
 
-<EditForm Model="_task" class="justify-content-center align-self-center" FormName="newProjForm" OnValidSubmit="Submit">
+<EditForm Model="_task" class="form-horizontal" FormName="newProjForm" OnValidSubmit="Submit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+    <ValidationSummary class="text-danger"></ValidationSummary>
 
-    <label for="name">Project name: </label>
-    <InputText id="name" type="text" name="inp" @bind-Value="_task.Name"></InputText>
-    <br/>
+    <div class="form-group">
+        <label for="name">Project name:</label>
+        <InputText id="name" type="text" name="inp" class="form-control" @bind-Value="_task.Name"></InputText>
+    </div>
 
-    <label for="startDate">Start date: </label>
-    <InputDate id="startDate" @bind-Value="_task.StartDate"></InputDate>
-    <br/>
+    <div class="form-group">
+        <label for="startDate">Start date:</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="_task.StartDate"></InputDate>
+    </div>
 
-    <label for="endDate">End date: </label>
-    <InputDate id="endDate"  @bind-Value="_task.EndDate"></InputDate>
-    <br/>
+    <div class="form-group">
+        <label for="endDate">End date:</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="_task.EndDate"></InputDate>
+    </div>
 
-    <label for="">Description: </label>
-    <InputText id="description" type="text" @bind-Value="_task.Description"></InputText>
-    <br/>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <InputText id="description" type="text" class="form-control" @bind-Value="_task.Description"></InputText>
+    </div>
 
-    <select @onchange="addMember">
-        
-        @foreach (var user in usersInProjekt)
-        {
+    <div class="form-group">
+        <label for="member">Assign member:</label>
+        <select @onchange="addMember" class="form-control">
+            @foreach (var user in usersInProjekt)
+            {
             <option value="@user.Name">@user.Name</option>
-        }
-    </select>
-    
-    <article>Is task completed: </article>
-    <InputCheckbox @bind-Value="@_task.IsCompleted" @oninput="() => _task.IsCompleted = !_task.IsCompleted"></InputCheckbox>
+            }
+        </select>
+    </div>
 
-    <br/>
-    <button type="submit">Submit</button>
+    <div class="form-group form-check">
+        <InputCheckbox id="isCompleted" class="form-check-input" @bind-Value="@_task.IsCompleted" @oninput="() => _task.IsCompleted = !_task.IsCompleted"></InputCheckbox>
+        <label for="isCompleted" class="form-check-label">Is task completed</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
 </EditForm>

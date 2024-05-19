@@ -10,13 +10,14 @@
 @inject ProtectedLocalStorage localStorage
 
 <PageTitle>Overview</PageTitle>
-
-<button class="btn btn-primary" @onclick="createProject">Create project</button>
+<button class="btn btn-primary mb-3" @onclick="createProject">Create project</button>
 
 @if (stateManager.isUserLogged)
 {
-    <p>You are logged in!</p>
-    
+    <div class="alert alert-success">
+        <p>You are logged in!</p>
+    </div>
+
     int currentUserId = stateManager.CurrentUser.WebUserId;
 
     //Selects all projects for given user
@@ -25,27 +26,37 @@
         .Where(p => p.MemberUsers.Any(mu => mu.WebUserId == currentUserId))
         .ToList();
 
-    if (projects.Count > 0)
+    @if (projects.Count > 0)
     {
-        <p>Members of project: </p>
-        foreach (var project in projects)
+        <p>Members of project:</p>
+        @foreach (var project in projects)
         {
-            <p><b>@project.Name</b></p>
-            foreach (var member in project.MemberUsers)
-            {
-                <p>@member.Name</p>
-            }
-            <button @onclick="e => editProject(project.ProjektId)">Show details</button>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="font-weight-bold">@project.Name</p>
+                    @foreach (var member in project.MemberUsers)
+                    {
+                        <p class="ml-3">@member.Name</p>
+                    }
+                    <button class="btn btn-info mt-2" @onclick="e => editProject(project.ProjektId)">Show details</button>
+                </div>
+            </div>
         }
     }
     else
     {
-        <p>You have no current projects</p>
+        <div class="alert alert-warning">
+            <p>You have no current projects</p>
+        </div>
     }
 }
 @if (Succes)
 {
-    @* <Alert Title="Succes" Message="Project successfully created!"></Alert> *@
-    <p>Project successfully created!</p>
-    Succes = false;
+    <div class="alert alert-success mt-3">
+        <p>Project successfully created!</p>
+        
+            Succes = false;
+        
+    </div>
 }
+

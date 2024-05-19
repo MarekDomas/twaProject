@@ -8,32 +8,45 @@
 @inject ProtectedLocalStorage localStorage
 
 <PageTitle>Register</PageTitle>
-<div class="align-items-center">
-    <EditForm Model="@_webUser" FormName="loginForm" OnValidSubmit="Register">
+<div class="d-flex justify-content-center align-items-center">
+    <EditForm Model="@_webUser" FormName="loginForm" OnValidSubmit="Register" class="w-50">
         <DataAnnotationsValidator></DataAnnotationsValidator>
-        <ValidationSummary></ValidationSummary>
-        <label for="name">Username: </label>
-        <InputText id="name" type="text" @bind-Value="@_webUser.Name"></InputText>
-        <br/>
-        <label for="password">Password: </label>
-        <InputText id="password" type="password" @bind-Value="@_webUser.Password"></InputText>
-        <br/>
-        <label for="passwordAgain">Password again: </label>
-        <InputText id="passwordAgain" type="password" @bind-Value="@psswAgain"></InputText>
-        <br/>
+        <ValidationSummary class="text-danger"></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Username:</label>
+            <InputText id="name" type="text" class="form-control" @bind-Value="@_webUser.Name"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="@_webUser.Password"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="passwordAgain">Password again:</label>
+            <InputText id="passwordAgain" type="password" class="form-control" @bind-Value="@psswAgain"></InputText>
+        </div>
+
         <button class="btn btn-primary" type="submit">Submit</button>
     </EditForm>
-    
+
     @if (!passwordsAlign)
     {
+    <div class="alert alert-danger mt-3">
         <p>Passwords are not aligning</p>
+    </div>
     }
     @if (succes)
     {
-        <p>Succes!</p>
+    <div class="alert alert-success mt-3">
+        <p>Success!</p>
+    </div>
     }
     @if (exists)
     {
+    <div class="alert alert-warning mt-3">
         <p>User with this username already exists!</p>
+    </div>
     }
 </div>

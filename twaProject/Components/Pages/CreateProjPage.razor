@@ -8,106 +8,121 @@
 @inject IJSRuntime JsRuntime
 
 <h3>CreateProjPage</h3>
-<div class="container">
+<div class="container mt-4">
     <div class="row">
-        <div class="col">
-            
-            <EditForm Model="_projekt" class="justify-content-center align-self-center" FormName="newProjForm" OnValidSubmit="Submit">
+        <div class="col-lg-6">
+            <EditForm Model="_projekt" class="form-horizontal" FormName="newProjForm" OnValidSubmit="Submit">
                 <DataAnnotationsValidator></DataAnnotationsValidator>
-                <ValidationSummary></ValidationSummary>
+                <ValidationSummary class="text-danger"></ValidationSummary>
 
-                <label for="name">Project name: </label>
-                <InputText id="name" type="text" name="inp" @bind-Value="_projekt.Name"></InputText>
-                <br/>
+                <div class="form-group">
+                    <label for="name">Project name:</label>
+                    <InputText id="name" type="text" name="inp" class="form-control" @bind-Value="_projekt.Name"></InputText>
+                </div>
 
-                <label for="startDate">Start date: </label>
-                <InputDate id="startDate" @bind-Value="_projekt.StartDate"></InputDate>
-                <br/>
+                <div class="form-group">
+                    <label for="startDate">Start date:</label>
+                    <InputDate id="startDate" class="form-control" @bind-Value="_projekt.StartDate"></InputDate>
+                </div>
 
-                <label for="endDate">End date: </label>
-                <InputDate id="endDate"  @bind-Value="_projekt.EndDate"></InputDate>
-                <br/>
+                <div class="form-group">
+                    <label for="endDate">End date:</label>
+                    <InputDate id="endDate" class="form-control" @bind-Value="_projekt.EndDate"></InputDate>
+                </div>
 
-                <label for="">Description: </label>
-                <InputText id="description" type="text" @bind-Value="_projekt.Description"></InputText>
-                <br/>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <InputText id="description" type="text" class="form-control" @bind-Value="_projekt.Description"></InputText>
+                </div>
 
-                <label>Add member: </label>
-                <button @onclick="addSelect" type="button">Add</button>
-                <br/>
+                <div class="form-group">
+                    <label>Add member:</label>
+                    <button @onclick="addSelect" type="button" class="btn btn-primary">Add</button>
+                </div>
 
-                <select @onchange="addMember" disabled>
-                    <option value="@stateManager.CurrentUser.Name">@stateManager.CurrentUser.Name</option>
-                </select>
-                
-                @* Shows selects of newly given users *@
+                <div class="form-group">
+                    <select @onchange="addMember" class="form-control" disabled>
+                        <option value="@stateManager.CurrentUser.Name">@stateManager.CurrentUser.Name</option>
+                    </select>
+                </div>
+
                 @if (!edit || newUsersCount > 0)
                 {
-                    <br />
-                    @* Adding selects for selecting users *@
+                <div class="form-group mt-3">
                     @foreach (var selectUser in memberUsers)
                     {
-                        <select @onchange="e =>  addMember(e)">
-                            @for(int i = -1; i < this.context.WebUser.Count(); i++) 
+                    <div class="d-flex align-items-center mb-2">
+                        <select @onchange="e =>  addMember(e)" class="form-control">
+                            @for(int i = -1; i < this.context.WebUser.Count(); i++)
                             {
-                                if(i == -1) 
-                                {
-                                    <option value="">"Choose member"</option>
-                                    //_projekt.MemberUsers.Add(user);
-                                    continue;
-                                }
-                                var user = this.context.WebUser.ToList()[i];
-                                if(user.Name == stateManager.CurrentUser.Name)
-                                {
-                                    continue;
-                                }
-                                <option value="@user.Name">@user.Name</option>
+                            if(i == -1)
+                            {
+                            <option value="">"Choose member"</option>
+                            continue;
+                            }
+                            var user = this.context.WebUser.ToList()[i];
+                            if(user.Name == stateManager.CurrentUser.Name)
+                            {
+                            continue;
+                            }
+                            <option value="@user.Name">@user.Name</option>
                             }
                         </select>
-                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(index)"/>
-                        <br/>
+                        <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(index)" style="cursor: pointer;"/>
+                    </div>
                     }
+                </div>
                 }
-                @if(edit) @* Shows selects of already assigned users*@
+
+                @if(edit)
                 {
+                <div class="form-group mt-3">
                     @foreach (var user in _projekt.MemberUsers)
                     {
-                        if (user.WebUserId == stateManager.CurrentUser.WebUserId )
-                        {
-                            continue;
-                        }
-                        if (memberUsers.Contains(user))
-                        {
-                            continue;
-                        }
+                    if (user.WebUserId == stateManager.CurrentUser.WebUserId )
+                    {
+                    continue;
+                    }
+                    if (memberUsers.Contains(user))
+                    {
+                    continue;
+                    }
 
-                        <select disabled>
+                    <div class="d-flex align-items-center mb-2">
+                        <select disabled class="form-control">
                             <option>@user.Name</option>
                         </select>
-                        <img alt="delete-button" src="@trashImage" @onclick="e => removeSelect(user.WebUserId)"/>
-                        existingUsersCount++;
-                        <br/>
+                        <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(user.WebUserId)" style="cursor: pointer;"/>
+                    </div>
+                    existingUsersCount++;
                     }
+                </div>
                 }
-                
-                <br/>
-                <button type="submit">Submit</button>
+
+                <button type="submit" class="btn btn-success mt-3">Submit</button>
             </EditForm>
         </div>
-        <div class="col">
+
+        <div class="col-lg-6">
             @foreach (var task in tasksInProjekt)
             {
-                <p>@task.Name</p>
-                <p>@task.WebUser.Name</p>
-                <button type="button" @onclick="e => editTask(e,task.TaskId)">Show details</button>
-                <input type="checkbox" @bind="@task.IsCompleted" disabled/>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">@task.Name</p>
+                    <p class="card-text">@task.WebUser.Name</p>
+                    <button type="button" class="btn btn-info" @onclick="e => editTask(e,task.TaskId)">Show details</button>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" @bind="@task.IsCompleted" disabled/>
+                        <label class="form-check-label">Completed</label>
+                    </div>
+                </div>
+            </div>
             }
 
-            <br/>
-            <button type="button" @onclick="addTask">Add task</button>
+            <button type="button" class="btn btn-primary mt-3" @onclick="addTask">Add task</button>
             @if (!projectExists)
             {
-                <p>Save project before adding tasks. </p>
+            <p class="text-danger mt-2">Save project before adding tasks.</p>
             }
         </div>
     </div>
