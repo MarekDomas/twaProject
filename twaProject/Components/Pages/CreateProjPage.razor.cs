@@ -29,10 +29,14 @@ public partial class CreateProjPage : ComponentBase
 
     protected override void OnInitialized()
     {
-        
         if (id is not null)
         {
             _projekt = context.Projekt.FirstOrDefault(p => p.ProjektId == id);
+            // if (!stateManager.CurrentUser.Projekts.Contains(_projekt))
+            // {
+            //     return;
+            // }
+            
             edit = true;
         }
         else

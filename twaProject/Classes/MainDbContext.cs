@@ -7,13 +7,7 @@ public class MainDbContext : DbContext
     public DbSet<Projekt> Projekt { get; set; }
     public DbSet<Task> Task { get; set; }
 
-    public MainDbContext(DbContextOptions<MainDbContext> options)
-        : base(options)
+    public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
     {
-        
     }
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    // {
-    //     optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebDb;Trusted_Connection=True;");
-    // }
 }

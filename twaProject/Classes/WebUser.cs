@@ -14,6 +14,6 @@ public class WebUser
     
     //Foreign key
     public List<Projekt>? Projekts { get; set; } = [];
-    public IList<Task>? Tasks { get; set; }= new List<Task>();
+    public List<Task>? Tasks { get; set; }= [];
     
 }
