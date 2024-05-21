@@ -1,6 +1,10 @@
-﻿@using twaProject.Classes
+﻿@using System.Diagnostics
+@using twaProject.Classes
+@using Task = twaProject.Classes.Task
 @inherits LayoutComponentBase
 @inject StateManager stateManager
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject NavigationManager NavigationManager
 
 <div class="page">
     @if (stateManager.isUserLogged)
@@ -11,9 +15,12 @@
     }
 
     <main >
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        @if (stateManager.isUserLogged)
+        {
+            <div class="top-row px-4">
+                <a @onclick="LogOut">Log out</a>
+            </div>
+        }
 
         <article class="content px-4">
             @Body
@@ -26,3 +33,17 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code{
+
+    async void LogOut()
+    {
+        await ProtectedLocalStorage.DeleteAsync("currentUser");
+
+        // Additional state clearing logic here
+
+        // Redirect to the initial state or home page
+        NavigationManager.NavigateTo("/", true);
+    }
+    
+}
