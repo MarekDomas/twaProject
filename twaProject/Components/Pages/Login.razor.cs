@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.EntityFrameworkCore;
 using twaProject.Classes;
+
 using Task = System.Threading.Tasks.Task;
 
 namespace twaProject.Components.Pages;
@@ -14,6 +16,8 @@ public partial class Login
     protected override void OnInitialized()
     {
         WebUser = new();
+        localStorage.DeleteAsync("currentUser");
+        localStorage.DeleteAsync("isUserLogged");
         base.OnInitialized();
     }
 

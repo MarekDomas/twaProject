@@ -1,10 +1,12 @@
 ﻿@using System.Diagnostics
+@using System.Threading
 @using twaProject.Classes
-@using Task = twaProject.Classes.Task
+@using Task = System.Threading.Tasks.Task
 @inherits LayoutComponentBase
 @inject StateManager stateManager
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject NavigationManager NavigationManager
+@inject ProtectedLocalStorage localStorage
 
 <div class="page">
     @if (stateManager.isUserLogged)
@@ -36,9 +38,18 @@
 
 @code{
 
+    protected override async Task OnInitializedAsync()
+    {
+        var result =  await localStorage.GetAsync<WebUser>("currentUser");
+        var userLogged= await localStorage.GetAsync<bool>("isUserLogged");
+        stateManager.CurrentUser = result.Value;
+        stateManager.isUserLogged = userLogged.Value;
+    }
+
     async void LogOut()
     {
         await ProtectedLocalStorage.DeleteAsync("currentUser");
+        await ProtectedLocalStorage.DeleteAsync("isUserLogged");
         
         NavigationManager.NavigateTo("/", true);
     }
