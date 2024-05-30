@@ -48,27 +48,34 @@
                 @if (!edit || newUsersCount > 0)
                 {
                 <div class="form-group mt-3">
-                    @foreach (var selectUser in memberUsers)
+                    @for (var i = 0; i < memberUsers.Count; i++)
                     {
-                    <div class="d-flex align-items-center mb-2">
-                        <select @onchange="e =>  addMember(e)" class="form-control">
-                            @for(int i = -1; i < this.context.WebUser.Count(); i++)
+                        var selectUser = memberUsers[i];
+                        <div class="d-flex align-items-center mb-2">
+                            <select @onchange="e =>  addMember(e)" class="form-control">
+                                @for (int j = -1; j < this.context.WebUser.Count(); j++)
+                                {
+                                    if (j == -1)
+                                    {
+                                        <option value="">"Choose member"</option>
+                                        continue;
+                                    }
+
+                                    var user = this.context.WebUser.ToList()[j];
+                                    if (user.Name == stateManager.CurrentUser.Name)
+                                    {
+                                        continue;
+                                    }
+
+                                    <option value="@user.Name">@user.Name</option>
+                                }
+                            </select>
+                            
+                            @if (i == memberUsers.Count - 1)
                             {
-                            if(i == -1)
-                            {
-                            <option value="">"Choose member"</option>
-                            continue;
+                                <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(this.index)" style="cursor: pointer;"/>
                             }
-                            var user = this.context.WebUser.ToList()[i];
-                            if(user.Name == stateManager.CurrentUser.Name)
-                            {
-                            continue;
-                            }
-                            <option value="@user.Name">@user.Name</option>
-                            }
-                        </select>
-                        <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(index)" style="cursor: pointer;"/>
-                    </div>
+                        </div>
                     }
                 </div>
                 }
@@ -78,14 +85,14 @@
                 <div class="form-group mt-3">
                     @foreach (var user in _projekt.MemberUsers)
                     {
-                    if (user.WebUserId == stateManager.CurrentUser.WebUserId )
-                    {
-                    continue;
-                    }
-                    if (memberUsers.Contains(user))
-                    {
-                    continue;
-                    }
+                        if (user.WebUserId == stateManager.CurrentUser.WebUserId )
+                        {
+                            continue;
+                        }
+                        if (memberUsers.Contains(user))
+                        {
+                            continue;
+                        }
 
                     <div class="d-flex align-items-center mb-2">
                         <select disabled class="form-control">
@@ -121,7 +128,7 @@
             <button type="button" class="btn btn-primary mt-3" @onclick="addTask">Add task</button>
             @if (!projectExists)
             {
-            <p class="text-danger mt-2">Save project before adding tasks.</p>
+                <p class="text-danger mt-2">Save project before adding tasks.</p>
             }
         </div>
     </div>

@@ -35,7 +35,6 @@ public partial class Login
                 await localStorage.SetAsync("currentUser", stateManager.CurrentUser);
                 navigationManager.NavigateTo("userDetails");
             }
-        
     }
 
     private void navToRegister()

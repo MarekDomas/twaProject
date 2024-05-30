@@ -73,8 +73,8 @@ public partial class CreateProjPage : ComponentBase
         
         if (edit)
         {
-            _projekt.MemberUsers = _projekt.MemberUsers.Distinct().ToList();
             _projekt.MemberUsers.AddRange(usersToAdd);
+            _projekt.MemberUsers = _projekt.MemberUsers.DistinctBy(u => u.Name).ToList();
             context.SaveChanges();
             navigationManager.NavigateTo("userDetails");
         }
