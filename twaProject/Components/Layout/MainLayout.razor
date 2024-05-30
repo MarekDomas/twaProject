@@ -39,10 +39,7 @@
     async void LogOut()
     {
         await ProtectedLocalStorage.DeleteAsync("currentUser");
-
-        // Additional state clearing logic here
-
-        // Redirect to the initial state or home page
+        
         NavigationManager.NavigateTo("/", true);
     }
     
