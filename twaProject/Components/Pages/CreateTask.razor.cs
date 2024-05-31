@@ -69,7 +69,7 @@ public partial class CreateTask : ComponentBase
         
         if (_task.WebUser is null)
         {
-            _task.WebUser = stateManager.CurrentUser;
+            _task.WebUser = context.WebUser.FirstOrDefault(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
         }
 
         if (!isEdit)

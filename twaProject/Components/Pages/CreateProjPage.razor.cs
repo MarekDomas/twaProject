@@ -74,7 +74,7 @@ public partial class CreateProjPage : ComponentBase
         if (edit)
         {
             _projekt.MemberUsers.AddRange(usersToAdd);
-            _projekt.MemberUsers = _projekt.MemberUsers.DistinctBy(u => u.Name).ToList();
+            _projekt.MemberUsers = _projekt.MemberUsers.DistinctBy(u => u.WebUserId).ToList();
             context.SaveChanges();
             navigationManager.NavigateTo("userDetails");
         }
@@ -116,17 +116,15 @@ public partial class CreateProjPage : ComponentBase
 
     private void addSelect()
     {
-        if (index + 1 < context.WebUser.Count())
+        if (index + 1 >= context.WebUser.Count()) return;
+        if (edit)
         {
-            if (edit)
-            {
-                newUsersCount++;
-                
-            }
-            memberUsers.Add(new());
-            index++;
-            StateHasChanged();
+            newUsersCount++;
         }
+        
+        memberUsers.Add(new());
+        index++;
+        StateHasChanged();
     }
 
     private void removeSelect(int i)
@@ -148,7 +146,7 @@ public partial class CreateProjPage : ComponentBase
 
         if (edit)
         {
-            WebUser userToRemove = context.WebUser.FirstOrDefault(u => u.WebUserId == i);
+            var userToRemove = context.WebUser.FirstOrDefault(u => u.WebUserId == i);
             _projekt.MemberUsers.Remove(userToRemove);    
         }
         else

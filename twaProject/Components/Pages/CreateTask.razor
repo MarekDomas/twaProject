@@ -36,8 +36,8 @@
         <label for="member">Assign member:</label>
         <select @onchange="addMember" class="form-control">
             @foreach (var user in usersInProjekt)
-            {
-            <option value="@user.Name">@user.Name</option>
+            { 
+                <option value="@user.Name">@user.Name</option>
             }
         </select>
     </div>

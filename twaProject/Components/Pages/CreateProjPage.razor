@@ -47,62 +47,62 @@
 
                 @if (!edit || newUsersCount > 0)
                 {
-                <div class="form-group mt-3">
-                    @for (var i = 0; i < memberUsers.Count; i++)
-                    {
-                        var selectUser = memberUsers[i];
-                        <div class="d-flex align-items-center mb-2">
-                            <select @onchange="e =>  addMember(e)" class="form-control">
-                                @for (int j = -1; j < this.context.WebUser.Count(); j++)
+                    <div class="form-group mt-3">
+                        @for (var i = 0; i < memberUsers.Count; i++)
+                        {
+                            var selectUser = memberUsers[i];
+                            <div class="d-flex align-items-center mb-2">
+                                <select @onchange="e =>  addMember(e)" class="form-control">
+                                    @for (int j = -1; j < this.context.WebUser.Count(); j++)
+                                    {
+                                        if (j == -1)
+                                        {
+                                            <option value="">"Choose member"</option>
+                                            continue;
+                                        }
+
+                                        var user = this.context.WebUser.ToList()[j];
+                                        if (user.Name == stateManager.CurrentUser.Name)
+                                        {
+                                            continue;
+                                        }
+
+                                        <option value="@user.Name">@user.Name</option>
+                                    }
+                                </select>
+                                
+                                @if (i == memberUsers.Count - 1)
                                 {
-                                    if (j == -1)
-                                    {
-                                        <option value="">"Choose member"</option>
-                                        continue;
-                                    }
-
-                                    var user = this.context.WebUser.ToList()[j];
-                                    if (user.Name == stateManager.CurrentUser.Name)
-                                    {
-                                        continue;
-                                    }
-
-                                    <option value="@user.Name">@user.Name</option>
+                                    <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(this.index)" style="cursor: pointer;"/>
                                 }
-                            </select>
-                            
-                            @if (i == memberUsers.Count - 1)
-                            {
-                                <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(this.index)" style="cursor: pointer;"/>
-                            }
-                        </div>
-                    }
-                </div>
+                            </div>
+                        }
+                    </div>
                 }
 
                 @if(edit)
                 {
-                <div class="form-group mt-3">
-                    @foreach (var user in _projekt.MemberUsers)
-                    {
-                        if (user.WebUserId == stateManager.CurrentUser.WebUserId )
+                    <div class="form-group mt-3">
+                        @foreach (var user in _projekt.MemberUsers)
                         {
-                            continue;
-                        }
-                        if (memberUsers.Contains(user))
-                        {
-                            continue;
-                        }
+                            if (user.WebUserId == stateManager.CurrentUser.WebUserId )
+                            {
+                                continue;
+                            }
+                            if (memberUsers.Contains(user))
+                            {
+                                continue;
+                            }
 
-                    <div class="d-flex align-items-center mb-2">
-                        <select disabled class="form-control">
-                            <option>@user.Name</option>
-                        </select>
-                        <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(user.WebUserId)" style="cursor: pointer;"/>
+                            <div class="d-flex align-items-center mb-2">
+                                <select disabled class="form-control">
+                                    <option>@user.Name</option>
+                                </select>
+                                <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(user.WebUserId)" style="cursor: pointer;"/>
+                            </div>
+                            existingUsersCount++;
+                        }
                     </div>
-                    existingUsersCount++;
-                    }
-                </div>
                 }
 
                 <button type="submit" class="btn btn-success mt-3">Submit</button>
@@ -112,17 +112,17 @@
         <div class="col-lg-6">
             @foreach (var task in tasksInProjekt)
             {
-            <div class="card mb-3">
-                <div class="card-body">
-                    <p class="card-text">@task.Name</p>
-                    <p class="card-text">@task.WebUser.Name</p>
-                    <button type="button" class="btn btn-info" @onclick="e => editTask(e,task.TaskId)">Show details</button>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" @bind="@task.IsCompleted" disabled/>
-                        <label class="form-check-label">Completed</label>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">@task.Name</p>
+                        <p class="card-text">@task.WebUser.Name</p>
+                        <button type="button" class="btn btn-info" @onclick="e => editTask(e,task.TaskId)">Show details</button>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" @bind="@task.IsCompleted" disabled/>
+                            <label class="form-check-label">Completed</label>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
 
             <button type="button" class="btn btn-primary mt-3" @onclick="addTask">Add task</button>
