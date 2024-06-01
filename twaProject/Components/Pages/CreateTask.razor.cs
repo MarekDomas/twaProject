@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using twaProject.Classes;
-using twaProject.Components.Templates;
 using Task = System.Threading.Tasks.Task;
 
 namespace twaProject.Components.Pages;
@@ -10,7 +10,7 @@ namespace twaProject.Components.Pages;
 public partial class CreateTask : ComponentBase
 {
     [Parameter] 
-    public int projektId { get; set; } = 0;
+    public int projektId { get; set; }
     [Parameter] 
     public int? taskId { get; set; }
     
@@ -33,6 +33,7 @@ public partial class CreateTask : ComponentBase
         if (taskId is not null)
         {
             _task = context.Task.FirstOrDefault(t => t.TaskId == taskId);
+            
             isEdit = true;
         }
         else
@@ -55,6 +56,13 @@ public partial class CreateTask : ComponentBase
         var userLogged= await localStorage.GetAsync<bool>("isUserLogged");
         stateManager.CurrentUser = result.Value;
         stateManager.isUserLogged = userLogged.Value;
+        
+        var user = context.WebUser.Include(webUser => webUser.Projekts).ToList().Find(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
+        
+        if (user.Projekts.ToList().TrueForAll(p => p.ProjektId != projektId) || (user.Tasks.ToList().TrueForAll(p => p.TaskId != taskId) && isEdit))
+        {
+            navigationManager.NavigateTo("/Unauthorized");
+        }
     }
 
     private void Submit(EditContext editContext)

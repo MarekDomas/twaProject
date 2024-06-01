@@ -12,30 +12,26 @@ namespace twaProject.Components.Pages;
 public partial class CreateProjPage : ComponentBase
 {
     [Parameter]
-    public int? id { get; set; } = null;//id used for routing purposes
+    public int? Id { get; set; } //id used for routing purposes
     
     private Projekt _projekt = new();
-    private List<WebUser> memberUsers { get; set; }= new();
-    private List<Classes.Task> _tasks { get; set; } = new();
+    private List<WebUser> memberUsers { get; set; }= [];
+    private List<Classes.Task> _tasks { get; set; } = [];
     private string trashImage = "Images/trash.png";
     private bool succes = false;
     private int index = 0;
     private bool edit = false;
     private int newUsersCount = 0;
     private int existingUsersCount = 0;
-    private List<WebUser> usersToAdd = new();
+    private List<WebUser> usersToAdd = [];
     private bool projectExists;
     List<Classes.Task> tasksInProjekt ;
 
     protected override void OnInitialized()
     {
-        if (id is not null)
+        if (Id is not null)
         {
-            _projekt = context.Projekt.FirstOrDefault(p => p.ProjektId == id);
-            // if (!stateManager.CurrentUser.Projekts.Contains(_projekt))
-            // {
-            //     return;
-            // }
+            _projekt = context.Projekt.FirstOrDefault(p => p.ProjektId == Id);
             
             edit = true;
         }
@@ -47,24 +43,33 @@ public partial class CreateProjPage : ComponentBase
             _projekt.EndDate = DateOnly.FromDateTime(DateTime.Now.Date);
             SelectUser.Users = _projekt.MemberUsers;
         }
+
         tasksInProjekt = context.Task
             .Where(task => task.ProjektId == _projekt.ProjektId)
             .Include(task => task.WebUser) // Include related WebUser
             .ToList();
+
         base.OnInitialized();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var result =  await localStorage.GetAsync<WebUser>("currentUser");
+        var result = await localStorage.GetAsync<WebUser>("currentUser");
         var userLogged= await localStorage.GetAsync<bool>("isUserLogged");
         stateManager.CurrentUser = result.Value;
         stateManager.isUserLogged = userLogged.Value;
+        
+        var user = context.WebUser.Include(webUser => webUser.Projekts).ToList().Find(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
+        
+        if (user.Projekts.ToList().TrueForAll(p => p.ProjektId != Id))
+        {
+            navigationManager.NavigateTo("/Unauthorized");
+        }
     }
 
     private void Submit(EditContext editContext)
     {
-        Projekt tempProj = (Projekt)editContext.Model;
+        var tempProj = (Projekt)editContext.Model;
         if (tempProj.StartDate > tempProj.EndDate)
         {
             JsRuntime.InvokeVoidAsync("alert","The end date cannot be less than start date!");

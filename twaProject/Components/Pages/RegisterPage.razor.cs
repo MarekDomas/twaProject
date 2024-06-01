@@ -34,6 +34,7 @@ public partial class RegisterPage
             context.WebUser.Add(tempUser);
             context.SaveChanges();
             succes = true;
+            navigationManager.NavigateTo("/");
         }
     
     }
