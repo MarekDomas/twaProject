@@ -1,6 +1,4 @@
-﻿@using System.Diagnostics
-@using System.Threading
-@using twaProject.Classes
+﻿@using twaProject.Classes
 @using Task = System.Threading.Tasks.Task
 @inherits LayoutComponentBase
 @inject StateManager stateManager
@@ -9,6 +7,7 @@
 @inject ProtectedLocalStorage localStorage
 
 <div class="page">
+    
     @if (stateManager.isUserLogged)
     {
         <div class="sidebar">

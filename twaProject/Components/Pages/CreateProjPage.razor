@@ -1,4 +1,5 @@
-﻿@page "/createProjPage/{id:int?}"
+﻿
+@page "/createProjPage/{id:int?}"
 @using twaProject.Classes
 @inject StateManager stateManager
 @inject NavigationManager navigationManager
@@ -47,10 +48,11 @@
 
                 @if (!edit || newUsersCount > 0)
                 {
+                    
                     <div class="form-group mt-3">
                         @for (var i = 0; i < memberUsers.Count; i++)
                         {
-                            var selectUser = memberUsers[i];
+                            selectsCount++;
                             <div class="d-flex align-items-center mb-2">
                                 <select @onchange="e =>  addMember(e)" class="form-control">
                                     @for (int j = -1; j < this.context.WebUser.Count(); j++)
@@ -93,7 +95,7 @@
                             {
                                 continue;
                             }
-
+                            
                             <div class="d-flex align-items-center mb-2">
                                 <select disabled class="form-control">
                                     <option>@user.Name</option>
@@ -101,6 +103,7 @@
                                 <img alt="delete-button" src="@trashImage" class="ml-2" @onclick="e => removeSelect(user.WebUserId)" style="cursor: pointer;"/>
                             </div>
                             existingUsersCount++;
+                            selectsCount++;
                         }
                     </div>
                 }

@@ -19,26 +19,26 @@ public partial class CreateProjPage : ComponentBase
     private List<Classes.Task> _tasks { get; set; } = [];
     private string trashImage = "Images/trash.png";
     private bool succes = false;
-    private int index = 0;
+    private int index;
     private bool edit = false;
-    private int newUsersCount = 0;
-    private int existingUsersCount = 0;
+    private int newUsersCount;
+    private int existingUsersCount;
     private List<WebUser> usersToAdd = [];
     private bool projectExists;
-    List<Classes.Task> tasksInProjekt ;
+    private List<Classes.Task> tasksInProjekt ;
+    private int selectsCount;
 
     protected override void OnInitialized()
     {
         if (Id is not null)
         {
             _projekt = context.Projekt.FirstOrDefault(p => p.ProjektId == Id);
-            
             edit = true;
         }
         else
         {
             _projekt = new();
-            _projekt.MemberUsers = new();
+            _projekt.MemberUsers = [];
             _projekt.StartDate = DateOnly.FromDateTime(DateTime.Now.Date);
             _projekt.EndDate = DateOnly.FromDateTime(DateTime.Now.Date);
             SelectUser.Users = _projekt.MemberUsers;
@@ -58,12 +58,16 @@ public partial class CreateProjPage : ComponentBase
         var userLogged= await localStorage.GetAsync<bool>("isUserLogged");
         stateManager.CurrentUser = result.Value;
         stateManager.isUserLogged = userLogged.Value;
-        
-        var user = context.WebUser.Include(webUser => webUser.Projekts).ToList().Find(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
-        
-        if (user.Projekts.ToList().TrueForAll(p => p.ProjektId != Id))
+
+        if (edit)
         {
-            navigationManager.NavigateTo("/Unauthorized");
+            var user = context.WebUser.Include(webUser => webUser.Projekts).ToList().Find(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
+            
+            if (user.Projekts.ToList().TrueForAll(p => p.ProjektId != Id))
+            {
+                navigationManager.NavigateTo("/Unauthorized");
+            }
+            
         }
     }
 
@@ -80,19 +84,27 @@ public partial class CreateProjPage : ComponentBase
         {
             _projekt.MemberUsers.AddRange(usersToAdd);
             _projekt.MemberUsers = _projekt.MemberUsers.DistinctBy(u => u.WebUserId).ToList();
+
+            if (_projekt.MemberUsers.Count < 1)
+            {
+                _projekt.MemberUsers.Add( context.WebUser.FirstOrDefault(u=> u.WebUserId == stateManager.CurrentUser.WebUserId) );
+            }
+            
             context.SaveChanges();
             navigationManager.NavigateTo("userDetails");
         }
         else
         {
-
             context.Database.EnsureCreated();
-
+            
             tempProj.MemberUsers = _projekt.MemberUsers;
             
             tempProj.MemberUsers.Add(context.WebUser.FirstOrDefault(u => u.WebUserId == stateManager.CurrentUser.WebUserId));
             tempProj.MemberUsers = tempProj.MemberUsers.Distinct().ToList();
-
+            if (tempProj.MemberUsers.Count < 1)
+            {
+                tempProj.MemberUsers.Add( context.WebUser.FirstOrDefault(u=> u.WebUserId == stateManager.CurrentUser.WebUserId) );
+            }
             context.Projekt.Add(tempProj);
             context.SaveChanges();
             succes = true;
@@ -108,7 +120,7 @@ public partial class CreateProjPage : ComponentBase
         {
             return;
         }
-        WebUser userToAdd = context.WebUser.FirstOrDefault(u => u.Name == tempUserName);
+        var userToAdd = context.WebUser.FirstOrDefault(u => u.Name == tempUserName);
         if (edit)
         {
             usersToAdd.Add(userToAdd);
@@ -121,7 +133,9 @@ public partial class CreateProjPage : ComponentBase
 
     private void addSelect()
     {
-        if (index + 1 >= context.WebUser.Count()) return;
+        if (index + 1 >= context.WebUser.Count() || _projekt.MemberUsers.Count == context.WebUser.Count() || selectsCount >= context.WebUser.Count())
+            return;
+        
         if (edit)
         {
             newUsersCount++;
@@ -129,18 +143,19 @@ public partial class CreateProjPage : ComponentBase
         
         memberUsers.Add(new());
         index++;
-        StateHasChanged();
+        selectsCount = 0;
     }
 
     private void removeSelect(int i)
     {
+        selectsCount = 0;
         if (!edit)
         {
             i--;
         }
         if (newUsersCount > 0 || !edit)
         {
-            memberUsers.RemoveAt(memberUsers.Count() - 1);
+            memberUsers.RemoveAt(memberUsers.Count - 1);
             newUsersCount--;
             index--;
         }

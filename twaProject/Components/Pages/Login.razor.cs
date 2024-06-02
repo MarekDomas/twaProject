@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using twaProject.Classes;
-
 using Task = System.Threading.Tasks.Task;
 
 namespace twaProject.Components.Pages;
@@ -15,7 +11,6 @@ public partial class Login
 
     protected override void OnInitialized()
     {
-        WebUser = new();
         localStorage.DeleteAsync("currentUser");
         localStorage.DeleteAsync("isUserLogged");
         base.OnInitialized();
@@ -25,16 +20,18 @@ public partial class Login
     {
         var tempUser = (WebUser)editContext.Model;
         
-            context.Database.EnsureCreated();
-            succes = context.WebUser.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
-            if (succes)
-            {
-                stateManager.isUserLogged = true;
-                stateManager.CurrentUser = context.WebUser.FirstOrDefault( u => u.Name == tempUser.Name);
-                await localStorage.SetAsync("isUserLogged", true);
-                await localStorage.SetAsync("currentUser", stateManager.CurrentUser);
-                navigationManager.NavigateTo("userDetails");
-            }
+        context.Database.EnsureCreated();
+        succes = context.WebUser.Any(u => u.Name == tempUser.Name && u.Password == tempUser.Password);
+        if (succes)
+        {
+            stateManager.isUserLogged = true;
+            stateManager.CurrentUser = context.WebUser.FirstOrDefault( u => u.Name == tempUser.Name);
+            
+            await localStorage.SetAsync("isUserLogged", true);
+            await localStorage.SetAsync("currentUser", stateManager.CurrentUser);
+            
+            navigationManager.NavigateTo("userDetails");
+        }
     }
 
     private void navToRegister()
