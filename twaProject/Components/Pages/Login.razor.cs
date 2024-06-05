@@ -6,7 +6,7 @@ namespace twaProject.Components.Pages;
 
 public partial class Login
 {
-    public WebUser WebUser = new();
+    private WebUser WebUser = new();
     private bool succes = true;
 
     protected override void OnInitialized()

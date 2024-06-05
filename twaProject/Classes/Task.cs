@@ -14,7 +14,7 @@ public class Task
 
     public bool IsCompleted { get; set; }
     
-    //Foreign keys
+    //Navigation properties
     public int? WebUserId { get; set; }
     public WebUser? WebUser { get; set; } 
     public int ProjektId { get; set; }

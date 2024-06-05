@@ -7,7 +7,5 @@ public class MainDbContext : DbContext
     public DbSet<Projekt> Projekt { get; set; }
     public DbSet<Task> Task { get; set; }
 
-    public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
-    {
-    }
+    public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
 }

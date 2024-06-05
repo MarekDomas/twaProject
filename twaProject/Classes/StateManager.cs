@@ -7,6 +7,6 @@ public class StateManager
 
     public WebUser CurrentUser = new()
     {
-        WebUserId = -50
+        WebUserId = 0
     };
 }

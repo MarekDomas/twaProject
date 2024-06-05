@@ -67,7 +67,7 @@ public partial class CreateTask : ComponentBase
 
     private void Submit(EditContext editContext)
     {
-        Classes.Task tempTask = (Classes.Task)editContext.Model;
+        var tempTask = (Classes.Task)editContext.Model;
 
         if (tempTask.StartDate > tempTask.EndDate)
         {
@@ -92,7 +92,7 @@ public partial class CreateTask : ComponentBase
     private void addMember(ChangeEventArgs e)
     {
         
-        WebUser userToAdd = context.WebUser.FirstOrDefault(u => u.Name == e.Value);
+        var userToAdd = context.WebUser.FirstOrDefault(u => u.Name == e.Value);
         _task.WebUser = userToAdd;
     }
 }

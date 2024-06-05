@@ -13,6 +13,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+        
+        //Injecting dependencies
         builder.Services.AddSingleton<StateManager>();
         builder.Services.AddDbContext<MainDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebDb;Trusted_Connection=True;"));
 

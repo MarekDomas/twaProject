@@ -45,7 +45,8 @@
                         <option value="@stateManager.CurrentUser.Name">@stateManager.CurrentUser.Name</option>
                     </select>
                 </div>
-
+                
+                @* Creating selects for new users *@
                 @if (!edit || newUsersCount > 0)
                 {
                     
@@ -82,6 +83,7 @@
                     </div>
                 }
 
+                @* Creating selects for existing users *@
                 @if(edit)
                 {
                     <div class="form-group mt-3">

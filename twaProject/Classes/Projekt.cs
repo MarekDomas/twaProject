@@ -5,7 +5,7 @@ namespace twaProject.Classes;
 public class Projekt
 {
     public int ProjektId { get; set; }
-    //Foreign keys
+    //Navigation properties
     public List<WebUser>? MemberUsers { get; set; }= [];
     public List<Task>? Tasks { get; set; } = [];
     

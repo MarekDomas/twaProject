@@ -12,7 +12,7 @@ public class WebUser
     [Required]
     public string Password { get; set; }
     
-    //Foreign key
+    //Navigation properties
     public List<Projekt>? Projekts { get; set; } = [];
     public List<Task>? Tasks { get; set; }= [];
     

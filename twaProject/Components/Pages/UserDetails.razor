@@ -21,11 +21,11 @@
     var currentUserId = stateManager.CurrentUser.WebUserId;
 
     //Selects all projects for given user
-    List<Projekt> projects = context.Projekt
+    var projects = context.Projekt
         .Include(p => p.MemberUsers) 
         .Where(p => p.MemberUsers.Any(mu => mu.WebUserId == currentUserId))
         .ToList();
-
+    
     @if (projects.Count > 0)
     {
         <p>Members of project:</p>

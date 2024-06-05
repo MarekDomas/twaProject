@@ -27,7 +27,7 @@ public partial class CreateProjPage : ComponentBase
     private bool projectExists;
     private List<Classes.Task> tasksInProjekt ;
     private int selectsCount;
-
+    
     protected override void OnInitialized()
     {
         if (Id is not null)
@@ -46,7 +46,7 @@ public partial class CreateProjPage : ComponentBase
 
         tasksInProjekt = context.Task
             .Where(task => task.ProjektId == _projekt.ProjektId)
-            .Include(task => task.WebUser) // Include related WebUser
+            .Include(task => task.WebUser)
             .ToList();
 
         base.OnInitialized();
@@ -59,7 +59,7 @@ public partial class CreateProjPage : ComponentBase
         stateManager.CurrentUser = result.Value;
         stateManager.isUserLogged = userLogged.Value;
 
-        if (edit)
+        if (edit)// Checks if user has acces to data
         {
             var user = context.WebUser.Include(webUser => webUser.Projekts).ToList().Find(u => u.WebUserId == stateManager.CurrentUser.WebUserId);
             
@@ -67,7 +67,6 @@ public partial class CreateProjPage : ComponentBase
             {
                 navigationManager.NavigateTo("/Unauthorized");
             }
-            
         }
     }
 
@@ -76,7 +75,7 @@ public partial class CreateProjPage : ComponentBase
         var tempProj = (Projekt)editContext.Model;
         if (tempProj.StartDate > tempProj.EndDate)
         {
-            JsRuntime.InvokeVoidAsync("alert","The end date cannot be less than start date!");
+            JsRuntime.InvokeVoidAsync("alert","The end date cannot be less than start date!"); // Javascript interop used for invoking alerts
             return;
         }
         
@@ -115,7 +114,7 @@ public partial class CreateProjPage : ComponentBase
     
     private void addMember(ChangeEventArgs e)
     {
-        string tempUserName = (string)e.Value ;
+        var tempUserName = (string)e.Value ;
         if (tempUserName is "" or "Choose member")
         {
             return;
